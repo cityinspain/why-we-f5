@@ -9,10 +9,11 @@ function Post(props) {
       <div className='post-container'>
         <div class='main-line'>
           <a href={props.url} class='post-title' target="_blank" rel='noopener noreferrer'>{props.title}</a>
-          <p class='post-time'>{props.time}</p>
+
         </div>
         <div class='secondary-line'>
-          <small>/u/{props.author}</small>
+          <span>/u/{props.author}</span>
+          <span class='time-label'>{props.time}</span>
         </div>
       </div>
     </div>
@@ -22,9 +23,14 @@ function Post(props) {
 
 function PostList(props) {
 
-  return props.posts.data.map(post => (
-    <Post title={post.title} time={moment(post.created_utc * 1000).format('L LT')} url={post.url} author={post.author}></Post>
-  ))
+  return(
+  <div className='posts-list'>
+    {props.posts.data.filter(post => post.title.toLowerCase().includes("mookie") || post.title.toLowerCase().includes("betts")).map(post => (
+    <Post className='posts-list' title={post.title} time={moment(post.created_utc * 1000).format('L LT')} url={post.url} author={post.author}></Post>
+  ))}
+
+  </div>
+)
 
 }
 
@@ -33,7 +39,9 @@ function PostList(props) {
 class App extends Component {
 
   state = {
-    posts: { data: [] }
+    posts: { data: [] },
+    loading: true,
+    hasCompletedInitialLoad: false
   };
 
   async componentDidMount() {
@@ -46,14 +54,15 @@ class App extends Component {
   }
 
   makeApiCall() {
+    this.setState({loading: true})
 
-    fetch('http://api.pushshift.io/reddit/search/submission/?title="mookie|betts"&subreddit=baseball')
+    fetch('http://api.pushshift.io/reddit/search/submission/?subreddit=baseball&size=500')
       .then(res => {
         return res.json()
       })
       .then(data => {
 
-        this.setState({ posts: data })
+        this.setState({ posts: data, loading: false, hasCompletedInitialLoad: true })
       }).catch(console.log)
   }
 
@@ -76,6 +85,9 @@ class App extends Component {
           </div>
         </div>
         <div className='content-container'>
+          <div className='loading-indicator-container'>
+            {this.state.loading === true && <p>{this.state.hasCompletedInitialLoad ? 'refreshing...' : 'loading...'}</p>}
+          </div>
 
           <PostList posts={this.state.posts}></PostList>
           

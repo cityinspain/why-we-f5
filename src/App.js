@@ -1,26 +1,76 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { Component } from 'react';
+// import logo from './logo.svg';
 import './App.css';
+import * as moment from 'moment';
 
-function App() {
+function Post(props) {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <div className='post-container'>
+        <div class='main-line'>
+          <a href={props.url} class='post-title' target="_blank" rel='noopener noreferrer'>{props.title}</a>
+          <p class='post-time'>{props.time}</p>
+        </div>
+        <div class='secondary-line'>
+          <small>/u/{props.author}</small>
+        </div>
+      </div>
     </div>
-  );
+
+  )
+}
+
+function PostList(props) {
+
+  return props.posts.data.map(post => (
+    <Post title={post.title} time={moment(post.created_utc * 1000).format('LTS')} url={post.url} author={post.author}></Post>
+  ))
+
+}
+
+
+
+class App extends Component {
+
+  state = {
+    posts: { data: [] }
+  };
+
+  async componentDidMount() {
+    this.makeApiCall();
+
+    this.interval = setInterval(() => {
+      this.makeApiCall()
+    }, 15000)
+
+  }
+
+  makeApiCall() {
+
+    fetch('http://api.pushshift.io/reddit/search/submission/?q=mookie&subreddit=baseball')
+      .then(res => {
+        return res.json()
+      })
+      .then(data => {
+
+        console.log('loading new data');
+        console.log(data)
+        this.setState({ posts: data })
+      }).catch(console.log)
+  }
+
+
+  render() {
+    return (
+      <div class='main-container'>
+        <h1>this is why we f5</h1>
+        <small class='name-label'>by /u/cityinspain</small>
+
+        <PostList posts={this.state.posts}></PostList>
+      </div>
+
+    );
+  }
 }
 
 export default App;

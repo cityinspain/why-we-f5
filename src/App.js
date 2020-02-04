@@ -47,7 +47,7 @@ class App extends Component {
 
   makeApiCall() {
 
-    fetch('http://api.pushshift.io/reddit/search/submission/?q=mookie&subreddit=baseball')
+    fetch('http://api.pushshift.io/reddit/search/submission/?title="mookie|betts"&subreddit=baseball')
       .then(res => {
         return res.json()
       })
@@ -60,12 +60,32 @@ class App extends Component {
 
   render() {
     return (
-      <div class='main-container'>
-        <h1>this is why we f5</h1>
-        <small class='name-label'>by /u/cityinspain</small>
+      <div className='App'>
 
-        <PostList posts={this.state.posts}></PostList>
+<div class='main-container'>
+        <div className='header'>
+          <div className='header-title'>
+            this is why we f5
+          </div>
+          <div className='author-label'>
+            by <a href='https://reddit.com/u/cityinspain' target='_blank' rel='noopener noreferrer'>/u/cityinspain</a>
+          </div>
+          <div className='description'>
+            <p>the data on this page will refresh every 15 seconds.</p>
+            <p>currently F5ing for "mookie betts"</p>
+          </div>
+        </div>
+        <div className='content-container'>
+
+          <PostList posts={this.state.posts}></PostList>
+          
+
+        </div>
+
       </div>
+
+      </div>
+      
 
     );
   }

@@ -23,7 +23,7 @@ function Post(props) {
 function PostList(props) {
 
   return props.posts.data.map(post => (
-    <Post title={post.title} time={moment(post.created_utc * 1000).format('LTS')} url={post.url} author={post.author}></Post>
+    <Post title={post.title} time={moment(post.created_utc * 1000).format('L LT')} url={post.url} author={post.author}></Post>
   ))
 
 }

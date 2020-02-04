@@ -53,8 +53,6 @@ class App extends Component {
       })
       .then(data => {
 
-        console.log('loading new data');
-        console.log(data)
         this.setState({ posts: data })
       }).catch(console.log)
   }

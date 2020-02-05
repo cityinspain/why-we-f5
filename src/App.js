@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import './App.css';
 import * as moment from 'moment';
 
+import { disableBodyScroll } from 'body-scroll-lock';
+
 function Post(props) {
   return (
     <div>
